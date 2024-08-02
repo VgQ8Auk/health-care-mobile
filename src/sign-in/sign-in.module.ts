@@ -8,10 +8,7 @@ import { SignInRepository } from './sign-in.repository';
 import { AuthModule } from 'src/common/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Users, Otp]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Users, Otp]), AuthModule],
   controllers: [SignInController],
   providers: [SignInService, SignInRepository],
 })
