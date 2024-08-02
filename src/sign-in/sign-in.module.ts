@@ -10,9 +10,9 @@ import { AuthModule } from 'src/common/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Users, Otp]),
-    AuthModule, // Ensure AuthModule is imported
+    AuthModule,
   ],
   controllers: [SignInController],
   providers: [SignInService, SignInRepository],
 })
-export class SignInModule {}
+export class SignInModule { }
