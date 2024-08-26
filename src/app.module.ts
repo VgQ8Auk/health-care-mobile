@@ -7,6 +7,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
 import { SignInModule } from './sign-in/sign-in.module';
 import { AuthModule } from './common/auth.module';
+import { UserInfoModule } from './user-info/user-info.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -16,12 +18,12 @@ import { AuthModule } from './common/auth.module';
     username: 'quoca',
     password: 'VqaUK2003',
     database: 'login',
-    entities: [__dirname + '/**/*.entity{.ts,.js}'],
+    entities: [__dirname + '/.entities/**/*.entity{.ts,.js}'],
     synchronize: true,
     migrationsRun: true,
-    dropSchema: true
+    dropSchema: false
   }),
-  ConfigModule.forRoot({isGlobal: true}), SignUpModule, MailerModule, SignInModule, AuthModule],
+  ConfigModule.forRoot({isGlobal: true, envFilePath: '.env'}), SignUpModule, MailerModule, SignInModule, AuthModule, UserInfoModule, CourseModule],
   controllers: [AppController],
   providers: [AppService],
 })

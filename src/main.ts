@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,7 @@ async function bootstrap() {
   )
   app.use(passport.initialize())
   app.use(passport.session())
-  await app.listen(3000);
+  app.use(cors());
+  await app.listen(3001);
 }
 bootstrap();

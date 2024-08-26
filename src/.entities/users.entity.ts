@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Generated } from 'typeorm';
 
 enum GENDER {
   Male = 'Male',
@@ -10,6 +10,13 @@ enum GENDER {
 export class Users {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
+
+  @Column()
+  @Generated('uuid')
+  uuid: string
+
+  @Column({ type: 'varchar' })
+  username: string;
 
   @Column({ unique: true, type: 'varchar' })
   email: string;

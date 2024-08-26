@@ -6,7 +6,7 @@ export class Otp {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: number;
 
-    @ManyToOne(() => Users, user => user.id, { nullable: false })
+    @ManyToOne(() => Users, user => user.uuid, { nullable: false })
     @JoinColumn()
     user: Users;
 

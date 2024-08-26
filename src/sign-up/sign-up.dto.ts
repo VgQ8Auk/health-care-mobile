@@ -1,8 +1,13 @@
 import { Type } from "class-transformer";
 import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from "class-validator";
-import { GENDER } from "src/entities/users.entity";
+import { GENDER } from "src/.entities/users.entity";
 
 export class SignUpDTO {
+
+    @IsString()
+    @IsOptional()
+    username?: string
+
     @IsNotEmpty()
     @IsEmail()
     email: string
