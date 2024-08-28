@@ -15,16 +15,12 @@ export class dtoCourse {
     @IsNotEmpty()
     name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    author: string;
-
     @IsNumber()
     @IsNotEmpty()
     price: number;
 
     @IsNumber()
     @IsNotEmpty()
-    course_category_id: number;
+    courseCategoryId: number;
 
 }

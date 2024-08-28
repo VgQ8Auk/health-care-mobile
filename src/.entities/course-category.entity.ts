@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Course } from "./course.entity";
 
 @Entity({ name: 'CourseCategory' })  // Renamed to match entity naming conventions
@@ -12,8 +12,8 @@ export class CourseCategory {
     @Column()
     description: string;
 
-    @OneToOne(() => Course, (course) => course.courseCategory)
-    course: Course;
+    @OneToMany(() => Course, (course) => course.courseCategory)
+    courses: Course[];
 
     @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

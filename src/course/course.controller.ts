@@ -24,11 +24,6 @@ export class CourseController {
         }
     }
 
-    @Get(':page')
-    @HttpCode(HttpStatus.OK)
-    async getAllCourses(@Param('page') page:number) {
-        
-    }
 
     @Post('create-course')
     @HttpCode(HttpStatus.CREATED)

@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, Generated, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { CourseCategory } from "./course-category.entity";
+import { Users } from "./users.entity";
 
 @Entity({ name: 'Course' })
 export class Course {
@@ -14,16 +15,25 @@ export class Course {
     name: string;
 
     @Column()
-    author: string;
-
-    @Column()
     price: number;
 
+    /////////////////////////////
     @Column({ type: 'bigint' })
-    course_category_id: number;
+    courseAuthorId: number;
 
-    @OneToOne(() => CourseCategory, (courseCategory) => courseCategory.course)
-    @JoinColumn({ name: 'course_category_id', referencedColumnName: 'id' })
+    @Column({ type: 'bigint' })
+    courseCategoryId: number;
+
+    @ManyToOne(() => Users, (user) => user.id)
+    @JoinColumn({ name: 'courseAuthorId' })
+    author: Users;
+
+    @ManyToMany(() => Users, (users) => users.id)
+    @JoinTable()
+    subscribers: Users[];
+
+    @ManyToOne(() => CourseCategory, (courseCategory) => courseCategory.courses)
+    @JoinColumn({ name: 'courseCategoryId', referencedColumnName: 'id' })
     courseCategory: CourseCategory;
 
     @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
