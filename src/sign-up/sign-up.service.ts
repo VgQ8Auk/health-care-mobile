@@ -1,11 +1,12 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, OnApplicationBootstrap } from '@nestjs/common';
 import { OtpDTO, SignUpDTO } from './sign-up.dto';
 import { SignUpRepository } from './sign-up.repository';
 import * as argon from 'argon2';
 import { SendEmailDto } from 'src/mailer/mailer.dto';
 import { MailerService } from 'src/mailer/mailer.service';
+import { GENDER } from 'src/.entities/users.entity';
 @Injectable()
-export class SignUpService {
+export class SignUpService implements OnApplicationBootstrap{
     constructor(
         private signupRepository: SignUpRepository,
         private mailerService: MailerService
@@ -169,5 +170,33 @@ export class SignUpService {
                 otp: otpValue
             }
         };
+    }
+
+    async onApplicationBootstrap() {
+        console.log('Application has been bootstrapped');
+        const adminEmail = 'ICan@healthcare.com';
+        const adminPassword = 'Ican@12345678';
+
+        const adminUser : SignUpDTO = {
+            username: 'Admin',
+            email: adminEmail,
+            password: adminPassword,
+            phonenumber: '0123456789',
+            country: 'Socialist Republic of Vietnam',
+            gender: GENDER.Male,
+            dateofbirth: new Date(1980, 0, 1)
+        }
+
+        try {
+            const existingAdmin = await this.signupRepository.findOneSignUpRepository(adminUser);
+            if (!existingAdmin) {
+                await this.createSignUpService(adminUser);
+                console.log('Default admin account created.');
+            } else {
+                console.log('Admin account already exists.');
+            }
+        } catch (error) {
+            console.error('Error creating default admin account:', error);
+        }
     }
 }
