@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CourseCategoryRepository, CourseRepository } from './course.repository';
 import { dtoCourse, dtoCourseCategory } from './course.dto';
+import { Users } from 'src/.entities/users.entity';
 
 @Injectable()
 export class CourseService{
@@ -8,19 +9,41 @@ export class CourseService{
         private readonly courseRepository:CourseRepository,
         private readonly courseCategoryRepository:CourseCategoryRepository
     ){}
-    async getCourseDetail(uuid: string) {
+
+    async getCourseByUuid(uuid: string) {
         try {
-            return await this.courseRepository.getCourseDetailByUser(uuid);
+            return await this.courseRepository.getCourseByUuid(uuid);
         } catch (error) {
             console.error(error);
             throw new Error('Failed to retrieve course details');
         }
     }
 
-    async createCourseDetail(body:dtoCourse) {
+    async getCoursesByUserUuid(uuid: string) {
         try {
-            this.courseRepository.createCourse(body)
-            return
+            return await this.courseRepository.getCoursesByUserUuid(uuid);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to retrieve course details');
+        }
+    }
+
+    async deleteCourseByUuid(uuid: string, userId:number) {
+        try {
+            return await this.courseRepository.deleteCourseByUuid(uuid, userId);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to delete course');
+        }
+    }
+
+    async createCourse(body:dtoCourse, userID:number) {
+        try {
+            this.courseRepository.createCourse(body, userID)
+            return {
+                status: 201,
+                message: 'create course successfully'
+            }
         } catch (error) {
             console.log(error)
         }

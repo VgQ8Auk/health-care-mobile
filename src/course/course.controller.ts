@@ -1,7 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { jwtGuard } from 'src/common/guards';
 import { dtoCourse, dtoCourseCategory } from './course.dto';
+import { GetUser } from 'src/common/decorators';
+import { Users } from 'src/.entities/users.entity';
 
 @Controller('course')
 @UseGuards(jwtGuard)
@@ -9,14 +11,35 @@ export class CourseController {
     constructor (private readonly courseService:CourseService)
     {}
 
-    
-
-    @Get(':uuid')
+    @Delete('/delete/:uuid')
     @HttpCode(HttpStatus.OK)
-    async getCourse(@Param('uuid') uuid: string) {
+    async deleteCourseByUuid(@Param('uuid') uuid: string, @GetUser('id') userID:number) {
         try {
-            console.log("hi");
-            const result = await this.courseService.getCourseDetail(uuid);
+            const result = await this.courseService.deleteCourseByUuid(uuid, userID);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw new HttpException('Failed to retrieve course details', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('/get')
+    @HttpCode(HttpStatus.OK)
+    async getCoursesByUserUuid(@GetUser('uuid') userUuid: string) {
+        try {
+            const result = await this.courseService.getCoursesByUserUuid(userUuid);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw new HttpException('Failed to retrieve course details', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('get/course/:courseUuid')
+    @HttpCode(HttpStatus.OK)
+    async getCourseByUuid(@Param('courseUuid') courseUuid: string) {
+        try {
+            const result = await this.courseService.getCourseByUuid(courseUuid);
             return result;
         } catch (error) {
             console.error(error);
@@ -27,10 +50,10 @@ export class CourseController {
 
     @Post('create-course')
     @HttpCode(HttpStatus.CREATED)
-    async createCourse(@Body() body:dtoCourse) {
+    async createCourse(@Body() body:dtoCourse, @GetUser('id') userID:number) {
         try {
             console.log(new Date(new Date().getTime() - (new Date().getTimezoneOffset()) * 60 * 1000).toUTCString(), "Post - createCourse")
-            return await this.courseService.createCourseDetail(body);
+            return await this.courseService.createCourse(body, userID);
         } catch (error) {
             console.log(error);
             throw new Error('Failed to retrieve course details');

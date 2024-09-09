@@ -12,7 +12,7 @@ export class SignUpService implements OnApplicationBootstrap{
         private mailerService: MailerService
     ) { }
 
-    async createSignUpService(INFO: SignUpDTO): Promise<number> {
+    async createSignUpService(INFO: SignUpDTO) {
         try {
             const existingUser = await this.signupRepository.findOneSignUpRepository(INFO);
             if (existingUser) {
@@ -31,7 +31,9 @@ export class SignUpService implements OnApplicationBootstrap{
             const mailerDto = this.createVerificationEmailDto(newUser.email, otpValue);
             await this.mailerService.sendEmail(mailerDto);
 
-            return newUser.id;
+            return {statusCode: 200,
+                message: "Create Users successfully",
+                userId: newUser.id};
         } catch (error) {
             console.error('Error during sign-up:', error);
             throw new InternalServerErrorException('An error occurred during sign-up.');

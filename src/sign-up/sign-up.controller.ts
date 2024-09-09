@@ -15,7 +15,7 @@ export class SignUpController {
         return this.signupService.createSignUpService(INFO)
     }
 
-    @Post('verify')
+    @Post('verify-otp')
     @HttpCode(HttpStatus.CREATED)
     async otpVerification(@Body() INFO:OtpDTO){
         console.log(new Date(new Date().getTime() - (new Date().getTimezoneOffset()) * 60 * 1000).toUTCString(), "Post - verification")

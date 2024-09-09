@@ -26,11 +26,7 @@ export class Course {
 
     @ManyToOne(() => Users, (user) => user.id)
     @JoinColumn({ name: 'courseAuthorId' })
-    author: Users;
-
-    @ManyToMany(() => Users, (users) => users.id)
-    @JoinTable()
-    subscribers: Users[];
+    courseAuthor: Users;
 
     @ManyToOne(() => CourseCategory, (courseCategory) => courseCategory.courses)
     @JoinColumn({ name: 'courseCategoryId', referencedColumnName: 'id' })
@@ -41,4 +37,7 @@ export class Course {
 
     @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
+
+    @Column({type:'boolean'})
+    active: boolean;
 }

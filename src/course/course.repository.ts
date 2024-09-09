@@ -11,14 +11,21 @@ export class CourseRepository{
         @InjectRepository(Course)
         private readonly courseRepository:Repository<Course>
     ){}
-    async getCourseDetailByUser (uuid:string) {
+
+    async getCourseByUuid(uuid:string){
         try {
-            const userPartner = await this.courseRepository.findOne({
+            
+        } catch (error) {console.log(error)}
+    }
+
+    async getCoursesByUserUuid (userUuid:string) {
+        try {
+            const userFound = await this.courseRepository.findOne({
                 where: {
-                    uuid: uuid
+                    uuid: userUuid
                 }
             });
-            if (!userPartner) {
+            if (!userFound) {
                 return {
                     statusCode: 404,
                     message: 'User not found.',
@@ -28,11 +35,14 @@ export class CourseRepository{
             }   
             const query = this.courseRepository.createQueryBuilder('course')
                 .leftJoin('course.courseCategory', 'courseCategory')
+                .leftJoin('course.courseAuthor', 'courseAuthor')
                 .select([
                     'course',
                     'courseCategory',
+                    'courseAuthor'
                 ])
-                .andWhere(`course.id = '${userPartner.id}'`)
+                .where('course.id = :userId', { userId: userFound.id })  // Use parameterized query
+                .andWhere('course.active = true');  // Specify the table alias for the active column
             let data = await query.getMany();
             const total = await query.getCount();
             return {
@@ -53,11 +63,39 @@ export class CourseRepository{
         }
     }
 
-    async createCourse(data:dtoCourse){
+    async createCourse(data:dtoCourse, userID:number){
         try {
-            const courseNew = this.courseRepository.create(data);
+            const dataNew = {
+                ...data,
+                courseAuthorId: userID
+            }
+            const courseNew = this.courseRepository.create(dataNew);
             return await this.courseRepository.save(courseNew);
         } catch (error) {console.log(error)}
+    }
+
+    async deleteCourseByUuid(uuid:string, userId:number){
+        try {
+            const courseFound = await this.courseRepository.findOne({where:{uuid:uuid}});
+            if (!courseFound) return {
+                statusCode: 404,
+                message: 'Course not found.',
+                data: [],
+                total: 0
+            };
+            courseFound.active=false;
+            return await this.courseRepository.save(courseFound);
+        } catch (error) {console.log(error)}
+    }
+
+    async editCourse(){
+        try {
+
+        } catch (error) {console.log(error)}
+    }
+
+    async subcribeCourse(){
+
     }
 }
 
